@@ -187,8 +187,8 @@ class MyNaiveBayesClassifier:
     def __init__(self):
         """Initializer for MyNaiveBayesClassifier.
         """
-        self.priors = None
-        self.posteriors = None
+        self.priors = {}
+        self.posteriors = {}
 
     def fit(self, X_train, y_train):
         """Fits a Naive Bayes classifier to X_train and y_train.
@@ -205,7 +205,31 @@ class MyNaiveBayesClassifier:
             You are free to choose the most appropriate data structures for storing the priors
                 and posteriors.
         """
-        pass # TODO: fix this
+        #count the instances of each class 
+        feature_counts = {}
+        class_counts = Counter(y_train)
+        self.priors = {label: count / len(y_train) for label, count in class_counts.items()}
+
+        #count feature values per class
+        feature_counts = {label: [{} for _ in range(len(X_train[0]))] for label in class_counts}
+
+
+        # Count feature values per class
+        for features, label in zip(X_train, y_train):
+            for idx, feature in enumerate(features):
+                feature_counts[label][idx][feature] = feature_counts[label][idx].get(feature, 0) + 1
+
+        # Calculate probabilities
+        self.posteriors = {
+            cls: [
+                {feature: count / sum(counts[idx].values()) for feature, count in counts[idx].items()}
+                for idx in range(len(X_train[0]))
+            ]
+            for cls, counts in feature_counts.items()
+        }
+
+            
+
 
     def predict(self, X_test):
         """Makes predictions for test instances in X_test.
@@ -217,7 +241,26 @@ class MyNaiveBayesClassifier:
         Returns:
             y_predicted(list of obj): The predicted target y values (parallel to X_test)
         """
-        return [] # TODO: fix this
+        y_predicted = []
+
+        # Iterate through each test instance
+        for features in X_test:
+            # Compute log probabilities for all classes
+            log_probs = {
+                cls: np.log(self.priors[cls]) + sum(
+                    np.log(class_posts[idx].get(feature, 1e-6))
+                    for idx, feature in enumerate(features)
+                )
+                for cls, class_posts in self.posteriors.items()
+            }
+
+            # Predict the class with the maximum log probability
+            y_predicted.append(max(log_probs, key=log_probs.get))
+
+        return y_predicted
+
+    
+    
 
 
 class MyRandomForestClassifier():
