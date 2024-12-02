@@ -220,7 +220,20 @@ class MyNaiveBayesClassifier:
         return [] # TODO: fix this
 
 
-    class MyRandomForestClassifier():
+class MyRandomForestClassifier():
     """
-    
+    Generate a random stratified test set consisting of one third of the original data set, with the remaining two thirds of the instances forming the "remainder set".
+    Generate N "random" decision trees using bootstrapping (giving a training and validation set) over the remainder set. At each node, build your decision trees by randomly selecting F of the remaining attributes as candidates to partition on. This is the standard random forest approach discussed in class. Note that to build your decision trees you should still use entropy; however, you are selecting from only a (randomly chosen) subset of the available attributes.
+    Select the M most accurate of the N decision trees using the corresponding validation sets.
+    Use simple majority voting to predict classes using the M decision trees over the test set.
+
     """
+    def __init__(self):
+        pass
+
+    def fit():
+        pass
+
+    def predict():
+        pass
+
