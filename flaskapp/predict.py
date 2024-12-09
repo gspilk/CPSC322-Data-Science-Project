@@ -8,6 +8,8 @@ app = Flask(__name__)
 def index():
     return "<h1>Welcome to the March Madness Predictor App<h1>",200
 
+# @app.route("/predict")
+# def predict():
 
 
 if __name__ == "__main__":
