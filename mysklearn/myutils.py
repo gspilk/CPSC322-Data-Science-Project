@@ -127,3 +127,28 @@ def randomize_in_place(alist, parallel_list=None):
         alist[i], alist[rand_index] = alist[rand_index], alist[i]
         if parallel_list is not None:
             parallel_list[i], parallel_list[rand_index] = parallel_list[rand_index], parallel_list[i]
+
+def do_fold_predictions(X, y, folds, clf, clf_name=None):
+    
+    y_true = []
+    y_pred = []
+    for i in range(len(folds)):
+        train_indexes = folds[i][0]
+        test_indexes = folds[i][1]
+        X_train = [X[index] for index in train_indexes]
+        X_test = [X[index] for index in test_indexes]
+        y_train = [y[index] for index in train_indexes]
+        y_test = [y[index] for index in test_indexes]
+        clf.fit(X_train, y_train)
+        for j in range(len(X_test)):
+            test_X = [X_test[j]]
+            class_actual = y_test[j]
+            prediction = clf.predict(test_X)
+            y_true.append(class_actual)
+            if clf_name == "Naive Bayes":
+                y_pred.append(prediction[0])
+            else:
+                y_pred.append(prediction)
+            
+            
+    return y_true, y_pred

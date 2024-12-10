@@ -79,82 +79,57 @@ class MySimpleLinearRegressionClassifier:
             return y_pred_discrete
 
 
+import statistics
+import operator
+
 class MyKNeighborsClassifier:
-    """Represents a simple k nearest neighbors classifier.
-    Attributes:
-        n_neighbors(int): number of k neighbors
-        X_train(list of list of numeric vals): The list of training instances (samples).
-                The shape of X_train is (n_train_samples, n_features)
-        y_train(list of obj): The target y values (parallel to X_train).
-            The shape of y_train is n_samples
-    Notes:
-        Loosely based on sklearn's KNeighborsClassifier:
-            https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
-        Terminology: instance = sample = row and attribute = feature = column
-        Assumes data has been properly normalized before use.
-    """
+    """Represents a simple k nearest neighbors classifier."""
     def __init__(self, n_neighbors=3):
-        """Initializer for MyKNeighborsClassifier.
-        Args:
-            n_neighbors(int): number of k neighbors
-        """
+        """Initializer for MyKNeighborsClassifier."""
         self.n_neighbors = n_neighbors
         self.X_train = None
         self.y_train = None
 
     def fit(self, X_train, y_train):
-        """Fits a kNN classifier to X_train and y_train.
-        Args:
-            X_train(list of list of numeric vals): The list of training instances (samples).
-                The shape of X_train is (n_train_samples, n_features)
-            y_train(list of obj): The target y values (parallel to X_train)
-                The shape of y_train is n_train_samples
-        Notes:
-            Since kNN is a lazy learning algorithm, this method just stores X_train and y_train
-        """
+        """Fits a kNN classifier to X_train and y_train."""
         self.X_train = X_train
         self.y_train = y_train
 
     def kneighbors(self, X_test):
-        """Determines the k closes neighbors of each test instance.
-        Args:
-            X_test(list of list of numeric vals): The list of testing samples
-                The shape of X_test is (n_test_samples, n_features)
-        Returns:
-            distances(list of list of float): 2D list of k nearest neighbor distances
-                for each instance in X_test
-            neighbor_indices(list of list of int): 2D list of k nearest neighbor
-                indices in X_train (parallel to distances)
-        """
+        """Determines the k closest neighbors of each test instance."""
         distances = []
         neighbor_indices = []
-        neighbor_index = 0
-        for neighbor_index, train_instance in enumerate(self.X_train):
-            distance = myutils.compute_euclidean_distance(train_instance, X_test[0])
-            distances.append([distance])
-            neighbor_indices.append([neighbor_index])
+        for test_instance in X_test:
+            distances_for_instance = []
+            neighbor_indices_for_instance = []
+            for neighbor_index, train_instance in enumerate(self.X_train):
+                distance = myutils.compute_euclidean_distance(train_instance, test_instance)
+                distances_for_instance.append(distance)
+                neighbor_indices_for_instance.append(neighbor_index)
+            distances.append(distances_for_instance)
+            neighbor_indices.append(neighbor_indices_for_instance)
         return distances, neighbor_indices
 
     def predict(self, X_test):
-        """Makes predictions for test instances in X_test.
-        Args:
-            X_test(list of list of numeric vals): The list of testing samples
-                The shape of X_test is (n_test_samples, n_features)
-        Returns:
-            y_predicted(list of obj): The predicted target y values (parallel to X_test)
-        """
+        """Makes predictions for test instances in X_test."""
         distances, neighbor_indices = self.kneighbors(X_test)
-        distance_and_indexes = {}
-        for i in range(len(distances)):
-            distance_and_indexes[neighbor_indices[i][0]] = distances[i][0]
-        sorted_distances = sorted(distance_and_indexes.items(), key=operator.itemgetter(-1))
-        k_nearest = sorted_distances[:self.n_neighbors]
-        y_predicted_k = []
-        for index in k_nearest:
-            y_predicted_k.append(self.y_train[index[0]])
+        y_predicted = []
+        
+        # Loop through each test instance
+        for i in range(len(X_test)):
+            distance_and_indexes = {neighbor_indices[i][j]: distances[i][j] for j in range(len(neighbor_indices[i]))}
+            sorted_distances = sorted(distance_and_indexes.items(), key=operator.itemgetter(1))  # Sort by distance
+            k_nearest = sorted_distances[:self.n_neighbors]
             
-        most_common = statistics.mode(y_predicted_k)
-        return most_common
+            # Get the labels of the k nearest neighbors
+            y_predicted_k = [self.y_train[index[0]] for index in k_nearest]
+            
+            # Get the most common label among the k nearest neighbors
+            most_common = statistics.mode(y_predicted_k)
+            y_predicted.append(most_common)
+        
+        return y_predicted
+
 
 
 
@@ -447,7 +422,7 @@ class MyRandomForestClassifier():
     Use simple majority voting to predict classes using the M decision trees over the test set.
 
     """
-    def __init__(self, N=20, M=7, F=2):
+    def __init__(self, N=20, M=7, F=4):
         self.N = N  # Number of trees
         self.M = M  # Number of trees to keep
         self.F = F  # Number of features to randomly select for each tree
