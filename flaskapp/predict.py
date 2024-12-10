@@ -42,6 +42,7 @@ def predict(self, X_test):
 @app.route("/")
 def index():
     return "<h1>Welcome to the March Madness Predictor App<h1>",200
+    return "<h1>https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FGonzaga_Bulldogs&psig=AOvVaw2kMA1DBTLJQTm5BjT8vFyP&ust=1733961054194000&source=images&cd=vfe&opi=89978449&ved=0CBcQjhxqFwoTCLjElbeynooDFQAAAAAdAAAAABAE<h1>",200
 
 # # lets add a route for the /predict endpoint
 @app.route("/predict")
