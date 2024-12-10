@@ -81,3 +81,39 @@ def evaluate_classifier(y_true, y_pred, classifier_name, step, labels, pos_label
     # Display confusion matrix
     print("Confusion Matrix:")
     print(confusion_mat)
+
+def get_column(table, col_index):
+    col = []
+    for i, row in enumerate(table):
+        try:
+            col.append(row[col_index])
+        except:
+            print("error")
+            pass
+    return col
+
+def compute_random_subset(values, num_values):
+    values_copy = values.copy()
+    np.random.shuffle(values_copy) # inplace shuffle
+    return values_copy[:num_values]
+
+def get_majority_vote(predictions):
+    instance_predictions, frequencies = get_list_frequencies(predictions)
+    most_votes = instance_predictions[0]
+    num_votes = frequencies[0]
+    for i in range(len(instance_predictions)):
+        if frequencies[i] > num_votes:
+            num_votes = frequencies[i]
+            most_votes = instance_predictions[i]
+    return most_votes
+
+def get_list_frequencies(list):
+    values = [] 
+    counts = [] 
+    for value in list:
+        if value not in values:
+            values.append(value)
+            counts.append(1)
+        else:
+            counts[values.index(value)] += 1 
+    return values, counts
