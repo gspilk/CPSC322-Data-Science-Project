@@ -1,7 +1,13 @@
 import pickle # standard library
 
-interview_header = ["level", "lang", "tweets", "phd"]
-interview_tree = ['Attribute', 'level', ['Value', 'Junior', ['Attribute', 'phd', ['Value', 'yes', ['Leaf', 'False', 2, 5]], ['Value', 'no', ['Leaf', 'True', 3, 5]]]], ['Value', 'Mid', ['Leaf', 'True', 4, 14]], ['Value', 'Senior', ['Attribute', 'tweets', ['Value', 'yes', ['Leaf', 'True', 2, 5]], ['Value', 'no', ['Leaf', 'False', 3, 5]]]]]
+march_header = ["TEAM", "ADJOE", "ADJDE", "EFF_O", "EFF_D", "YEAR"] # TEAM, OFFADJ, DEFADJ, EFF_O, EFF_D
+march_tree = ['Attribute', 'TEAM', 
+              ['Value', 'Duke', 
+               ['Attribute', 'ADJOE', 
+                ['Value', '125.2', ['Leaf', 'True', 1, 3523]], 
+                ['Value', 'no', ['Leaf', 'False', 3522, 3523]]]
+              ]
+]
 
 # pickle (object serialization): saving a binary representation of an object
 # to file for loading and using later
@@ -15,7 +21,7 @@ interview_tree = ['Attribute', 'level', ['Value', 'Junior', ['Attribute', 'phd',
 # requests from clients
 
 # lets pickle header and tree (together)
-packaged_obj = (interview_header, interview_tree)
+packaged_obj = (march_header, march_tree)
 outfile = open("tree.p", "wb")
 pickle.dump(packaged_obj, outfile)
 outfile.close()

@@ -1,7 +1,7 @@
 import requests # a lib for making http requests
 import json # a lib for working with json
 
-url = "https://march-madness-champion-predictor.onrender.com"
+url = "http://localhost:5001/predict?TEAM=Duke&ADJOE=125.2&ADJDE=90.6&EFF_O=0.9764&EFF_D=56.6&YEAR=2015"
 
 response = requests.get(url=url)
 
