@@ -260,7 +260,7 @@ def accuracy_score(y_true, y_pred, normalize=True):
     if normalize:
         return correct_count / len(y_true)
     else:
-        return correct_count
+        return correct_count 
     
 def binary_precision_score(y_true, y_pred, labels=None, pos_label=None):
     """Compute the precision (for binary classification). The precision is the ratio tp / (tp + fp)
@@ -285,7 +285,24 @@ def binary_precision_score(y_true, y_pred, labels=None, pos_label=None):
         Loosely based on sklearn's precision_score():
             https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html
     """
-    return 0.0 # TODO: fix this
+    if labels is None:
+        labels = list(set(y_true))  # Default labels to unique values in y_true
+    if pos_label is None:
+        pos_label = labels[0]  # Default to the first label in labels
+
+    tp = fp = 0
+    for true, pred in zip(y_true, y_pred):
+        if pred == pos_label:
+            if true == pos_label:
+                tp += 1  # True positive
+            else:
+                fp += 1  # False positive
+
+    # Prevent division by zero
+    if tp + fp == 0:
+        return 0.0
+
+    return tp / (tp + fp)
 
 def binary_recall_score(y_true, y_pred, labels=None, pos_label=None):
     """Compute the recall (for binary classification). The recall is the ratio tp / (tp + fn) where tp is
@@ -310,7 +327,24 @@ def binary_recall_score(y_true, y_pred, labels=None, pos_label=None):
         Loosely based on sklearn's recall_score():
             https://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html
     """
-    return 0.0 # TODO: fix this
+    if labels is None:
+        labels = list(set(y_true))  # Default labels to unique values in y_true
+    if pos_label is None:
+        pos_label = labels[0]  # Default to the first label in labels
+
+    tp = fn = 0
+    for true, pred in zip(y_true, y_pred):
+        if true == pos_label:
+            if pred == pos_label:
+                tp += 1  # True positive
+            else:
+                fn += 1  # False negative
+
+    # Prevent division by zero
+    if tp + fn == 0:
+        return 0.0
+
+    return tp / (tp + fn)
 
 def binary_f1_score(y_true, y_pred, labels=None, pos_label=None):
     """Compute the F1 score (for binary classification), also known as balanced F-score or F-measure.
@@ -336,4 +370,11 @@ def binary_f1_score(y_true, y_pred, labels=None, pos_label=None):
         Loosely based on sklearn's f1_score():
             https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html
     """
-    return 0.0 # TODO: fix this
+    precision = binary_precision_score(y_true, y_pred, labels=labels, pos_label=pos_label)
+    recall = binary_recall_score(y_true, y_pred, labels=labels, pos_label=pos_label)
+
+    # Prevent division by zero (when precision + recall == 0)
+    if precision + recall == 0:
+        return 0.0
+
+    return 2 * (precision * recall) / (precision + recall)
