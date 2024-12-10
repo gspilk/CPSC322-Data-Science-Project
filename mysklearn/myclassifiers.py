@@ -1,20 +1,24 @@
-from mysklearn import myutils
 
 # TODO: copy your myclassifiers.py solution from PA4-5 here
 """
 Brandon Poblette
 CPSC 322-01, Fall 2024
 Programming Assignment #4
-10/29/2024
+12/12/2024
 I attempted the bomus
 
 Description: Create several ml classifiers
 """
+
 import numpy as np
 import random
 from collections import Counter
 from mysklearn import myutils
 from mysklearn.mysimplelinearregressor import MySimpleLinearRegressor
+from collections import Counter
+import statistics
+import operator
+from mysklearn import myevaluation
 
 class MySimpleLinearRegressionClassifier:
     """Represents a simple linear regression classifier that discretizes
@@ -76,59 +80,82 @@ class MySimpleLinearRegressionClassifier:
 
 
 class MyKNeighborsClassifier:
-    """Represents a simple k nearest neighbors classifier."""
-
+    """Represents a simple k nearest neighbors classifier.
+    Attributes:
+        n_neighbors(int): number of k neighbors
+        X_train(list of list of numeric vals): The list of training instances (samples).
+                The shape of X_train is (n_train_samples, n_features)
+        y_train(list of obj): The target y values (parallel to X_train).
+            The shape of y_train is n_samples
+    Notes:
+        Loosely based on sklearn's KNeighborsClassifier:
+            https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
+        Terminology: instance = sample = row and attribute = feature = column
+        Assumes data has been properly normalized before use.
+    """
     def __init__(self, n_neighbors=3):
-        """Initializer for MyKNeighborsClassifier."""
+        """Initializer for MyKNeighborsClassifier.
+        Args:
+            n_neighbors(int): number of k neighbors
+        """
         self.n_neighbors = n_neighbors
         self.X_train = None
         self.y_train = None
 
     def fit(self, X_train, y_train):
-        """Fits a kNN classifier to X_train and y_train."""
-        self.X_train = np.array(X_train)
-        self.y_train = np.array(y_train)
+        """Fits a kNN classifier to X_train and y_train.
+        Args:
+            X_train(list of list of numeric vals): The list of training instances (samples).
+                The shape of X_train is (n_train_samples, n_features)
+            y_train(list of obj): The target y values (parallel to X_train)
+                The shape of y_train is n_train_samples
+        Notes:
+            Since kNN is a lazy learning algorithm, this method just stores X_train and y_train
+        """
+        self.X_train = X_train
+        self.y_train = y_train
 
     def kneighbors(self, X_test):
-        """Determines the k closest neighbors of each test instance."""
-        X_test = np.array(X_test)
+        """Determines the k closes neighbors of each test instance.
+        Args:
+            X_test(list of list of numeric vals): The list of testing samples
+                The shape of X_test is (n_test_samples, n_features)
+        Returns:
+            distances(list of list of float): 2D list of k nearest neighbor distances
+                for each instance in X_test
+            neighbor_indices(list of list of int): 2D list of k nearest neighbor
+                indices in X_train (parallel to distances)
+        """
         distances = []
         neighbor_indices = []
-
-        for test_point in X_test:
-            # Calculate the Euclidean distances from the test point to all training points
-            dists = np.linalg.norm(self.X_train - test_point, axis=1)
-            # Get the indices of the k closest neighbors
-            k_indices = np.argsort(dists)[:self.n_neighbors]
-            # Store the distances and indices of the k neighbors
-            distances.append(dists[k_indices].tolist())
-            neighbor_indices.append(k_indices.tolist())
-
+        neighbor_index = 0
+        for neighbor_index, train_instance in enumerate(self.X_train):
+            distance = myutils.compute_euclidean_distance(train_instance, X_test[0])
+            distances.append([distance])
+            neighbor_indices.append([neighbor_index])
         return distances, neighbor_indices
 
     def predict(self, X_test):
         """Makes predictions for test instances in X_test.
-
         Args:
             X_test(list of list of numeric vals): The list of testing samples
                 The shape of X_test is (n_test_samples, n_features)
-
         Returns:
             y_predicted(list of obj): The predicted target y values (parallel to X_test)
         """
-        y_predicted = []
+        distances, neighbor_indices = self.kneighbors(X_test)
+        distance_and_indexes = {}
+        for i in range(len(distances)):
+            distance_and_indexes[neighbor_indices[i][0]] = distances[i][0]
+        sorted_distances = sorted(distance_and_indexes.items(), key=operator.itemgetter(-1))
+        k_nearest = sorted_distances[:self.n_neighbors]
+        y_predicted_k = []
+        for index in k_nearest:
+            y_predicted_k.append(self.y_train[index[0]])
+            
+        most_common = statistics.mode(y_predicted_k)
+        return most_common
 
-        for x_test in X_test:
-            # Calculate the Euclidean distance from x_test to all training points
-            distances = np.linalg.norm(np.array(self.X_train) - np.array(x_test), axis=1)
-            # Get the indices of the k nearest neighbors
-            neighbor_indices = np.argsort(distances)[:self.n_neighbors]
-            # Get the corresponding labels
-            neighbor_labels = [self.y_train[i] for i in neighbor_indices]
-            # Compute the average for regression
-            y_predicted.append(np.mean(neighbor_labels))
-
-        return y_predicted
 
 
 class MyDummyClassifier:
@@ -259,7 +286,6 @@ class MyNaiveBayesClassifier:
 
         return y_predicted
 
-    
 class MyDecisionTreeClassifier:
     """Represents a decision tree classifier.
 
@@ -393,6 +419,24 @@ class MyDecisionTreeClassifier:
             self._traverse_tree_for_rules(branch[2], rules, new_rule, attribute_names, class_name)
 
 
+    # BONUS method
+    def visualize_tree(self, dot_fname, pdf_fname, attribute_names=None):
+        """BONUS: Visualizes a tree via the open source Graphviz graph visualization package and
+        its DOT graph language (produces .dot and .pdf files).
+
+        Args:
+            dot_fname(str): The name of the .dot output file.
+            pdf_fname(str): The name of the .pdf output file generated from the .dot file.
+            attribute_names(list of str or None): A list of attribute names to use in the decision rules
+                (None if a list is not provided and the default attribute names based on indexes
+                (e.g. "att0", "att1", ...) should be used).
+
+        Notes:
+            Graphviz: https://graphviz.org/
+            DOT language: https://graphviz.org/doc/info/lang.html
+            You will need to install graphviz in the Docker container as shown in class to complete this method.
+        """
+        pass # TODO: (BONUS) fix this
 
 
 class MyRandomForestClassifier():
@@ -403,12 +447,67 @@ class MyRandomForestClassifier():
     Use simple majority voting to predict classes using the M decision trees over the test set.
 
     """
-    def __init__(self):
-        pass
+    def __init__(self, N, M, F):
+        self.N = N  # Number of trees
+        self.M = M  # Number of trees to keep
+        self.F = F  # Number of features to randomly select for each tree
+        self.trees = []  # List to store the decision trees
+        self.attribute_domain = {}  # Domain for each attribute in the dataset
+        self.header = []  # Attribute names
 
-    def fit():
-        pass
+    def fit(self, X, y):
+        """Fits the Random Forest model using bootstrapping and decision trees.
+        
+        Args:
+            X (list of list): Training data instances (samples).
+            y (list): Target values corresponding to the training data.
+        """
+        # Define attribute names (att0, att1, ...)
+        self.header = [f"att{i}" for i in range(len(X[0]))]
 
-    def predict():
-        pass
+        # Construct the attribute domain (unique values for each attribute)
+        self.attribute_domain = {
+            header: list(np.unique(myutils.get_column(X, i)))
+            for i, header in enumerate(self.header)
+        }
+
+        # Generate N decision trees
+        N_trees = []
+        for _ in range(self.N):
+            X_train, X_test, y_train, y_test = myevaluation.bootstrap_sample(X, y)
+
+            # Create and train a decision tree using a random subset of features
+            available_attributes = myutils.compute_random_subset(self.header, self.F)
+            curr_tree = MyDecisionTreeClassifier()
+            curr_tree.fit(X_train, y_train)
+
+            # Evaluate the tree on the validation set
+            curr_predictions = curr_tree.predict(X_test)
+            accuracy = myevaluation.accuracy_score(y_test, curr_predictions)
+            N_trees.append((accuracy, curr_tree))
+
+        # Sort the trees by accuracy and keep the top M
+        N_trees.sort(key=lambda x: x[0], reverse=True)
+        self.trees = [tree for _, tree in N_trees[:self.M]]
+
+    def predict(self, X_test):
+        """Makes predictions for the given test instances.
+
+        Args:
+            X_test (list of list): Testing data instances.
+
+        Returns:
+            list: Predicted target values for the test set.
+        """
+        # Collect predictions from all trees
+        all_predictions = [tree.predict(X_test) for tree in self.trees]
+
+        # Use majority voting to make final predictions
+        y_predicted = []
+        for i in range(len(all_predictions[0])):
+            instance_votes = myutils.get_column(all_predictions, i)
+            y_predicted.append(myutils.get_majority_vote(instance_votes))
+
+        return y_predicted
+
 
