@@ -1,7 +1,8 @@
 import pickle # standard library
 
 march_header = ["TEAM", "ADJOE", "ADJDE", "EFF_O", "EFF_D", "YEAR"] # TEAM, OFFADJ, DEFADJ, EFF_O, EFF_D
-march_tree = ['Attribute', 'TEAM', ['Value', 'Duke', ['Attribute', 'ADJOE', ['Value', '125.2', ['Leaf', 'True', 1, 3523]], ['Value', 'no', ['Leaf', 'False', 3522, 3523]]]]]
+march_tree = ['Attribute', 'TEAM', ['Value', 'Duke', ['Attribute', 'ADJOE', ['Value', '125.2', ['Leaf', 'True', 1, 3523]], ['Value', 'no', ['Leaf', 'False', 3522, 3523]]], ['Attribute', 'ADJDE', ['Value', '90.6', ['Leaf', 'True', 1, 3523]], ['Value', 'no', ['Leaf', 'False', 3522, 3523]]], ['Attribute', 'EFF_O', ['Value', '0.9764', ['Leaf', 'True', 1, 3523]], ['Value', 'no', ['Leaf', 'False', 3522, 3523]]], ['Attribute', 'EFF_D', ['Value', '56.6', ['Leaf', 'True', 1, 3523]], ['Value', 'no', ['Leaf', 'False', 3522, 3523]]], ['Attribute', 'YEAR', ['Value', '2015', ['Leaf', 'True', 1, 3523]], ['Value', 'no', ['Leaf', 'False', 3522, 3523]]]]]
+
 
 # pickle (object serialization): saving a binary representation of an object
 # to file for loading and using later
