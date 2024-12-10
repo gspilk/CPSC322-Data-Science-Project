@@ -447,7 +447,7 @@ class MyRandomForestClassifier():
     Use simple majority voting to predict classes using the M decision trees over the test set.
 
     """
-    def __init__(self, N, M, F):
+    def __init__(self, N=20, M=7, F=2):
         self.N = N  # Number of trees
         self.M = M  # Number of trees to keep
         self.F = F  # Number of features to randomly select for each tree
