@@ -12,37 +12,39 @@ def load_model():
     infile.close()
     return header, tree
 
-def predict(self, X_test):
-    """Makes predictions for test instances in X_test.
 
-    Args:
-        X_test (list of list of obj): The list of testing samples
-            The shape of X_test is (n_test_samples, n_features)
-
-    Returns:
-        y_predicted (list of obj): The predicted target y values (parallel to X_test)
-    """
-    y_predicted = []
-
-    # Iterate through each test instance
-    for features in X_test:
-        # Compute log probabilities for all classes
-        log_probs = {
-            cls: np.log(self.priors[cls]) + sum(
-                np.log(class_posts[idx].get(feature, 1e-6))
-                for idx, feature in enumerate(features)
-            )
-            for cls, class_posts in self.posteriors.items()
-        }
-
-        # Predict the class with the maximum log probability
-        y_predicted.append(max(log_probs, key=log_probs.get))
-    return y_predicted
-
+# TEAM,CONF,G,W,ADJOE,ADJDE,BARTHAG,EFG_O,EFG_D,TOR,TORD,ORB,DRB,FTR,FTRD,2P_O,2P_D,3P_O,3P_D,ADJ_T,WAB,POSTSEASON,SEED,YEAR
 @app.route("/")
 def index():
-    return "<h1>Welcome to the March Madness Predictor App</h1>",200
-    return "<h1>Hello World!</h1>",200
+    return """
+        <h1>Welcome to the March Madness Predictor App</h1>
+        <img src="https://i.bleacherreport.net/images/team_logos/328x328/gonzaga_basketball.png?canvas=492,328" alt="Gonzaga Bulldogs">
+        
+        <!-- Example button to trigger a prediction or form submission -->
+        <form action="/predict" method="get">
+            <label for="TEAM">Team:</label>
+            <input type="text" id="TEAM" name="TEAM"><br><br>
+            
+            <label for="ADJOE">ADJOE:</label>
+            <input type="text" id="ADJOE" name="ADJOE"><br><br>
+
+            <label for="ADJDE">ADJDE:</label>
+            <input type="text" id="ADJDE" name="ADJDE"><br><br>
+
+            <label for="EFF_O">EFF_O:</label>
+            <input type="text" id="EFF_O" name="EFF_O"><br><br>
+
+            <label for="EFF_D">EFF_D:</label>
+            <input type="text" id="EFF_D" name="EFF_D"><br><br>
+
+            <label for="YEAR">YEAR:</label>
+            <input type="text" id="YEAR" name="YEAR"><br><br>
+
+            <!-- Button to submit the form -->
+            <button type="submit">Make Prediction</button>
+        </form>
+    """, 200
+
 
 # # lets add a route for the /predict endpoint
 @app.route("/predict")
