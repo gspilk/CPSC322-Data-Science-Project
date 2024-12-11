@@ -1,70 +1,18 @@
-#to do: create the flask which allows users to predict using the random forests algorithm.
-import pickle
-from flask import Flask, request, jsonify
+import requests # a lib for making http requests
+import json # a lib for working with json
 
-app = Flask(__name__)
+url = "https://march-madness-tournament-predictor.onrender.com"
 
-def load_model():
-    # unpickle header and tree in tree.p
-    infile = open("flaskapp/tree.p", "rb")
-    header, tree = pickle.load(infile)
-    infile.close()
-    return header, tree
+response = requests.get(url=url)
 
-def predict(self, X_test):
-    """Makes predictions for test instances in X_test.
-
-    Args:
-        X_test (list of list of obj): The list of testing samples
-            The shape of X_test is (n_test_samples, n_features)
-
-    Returns:
-        y_predicted (list of obj): The predicted target y values (parallel to X_test)
-    """
-    y_predicted = []
-
-    # Iterate through each test instance
-    for features in X_test:
-        # Compute log probabilities for all classes
-        log_probs = {
-            cls: np.log(self.priors[cls]) + sum(
-                np.log(class_posts[idx].get(feature, 1e-6))
-                for idx, feature in enumerate(features)
-            )
-            for cls, class_posts in self.posteriors.items()
-        }
-
-        # Predict the class with the maximum log probability
-        y_predicted.append(max(log_probs, key=log_probs.get))
-
-    return y_predicted
-
-@app.route("/")
-def index():
-    return "<h1>Welcome to the March Madness Predictor App<h1>",200
-    return "<h1>https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FGonzaga_Bulldogs&psig=AOvVaw2kMA1DBTLJQTm5BjT8vFyP&ust=1733961054194000&source=images&cd=vfe&opi=89978449&ved=0CBcQjhxqFwoTCLjElbeynooDFQAAAAAdAAAAABAE<h1>",200
-
-# # lets add a route for the /predict endpoint
-@app.route("/predict")
-def predict():
-    # lets parse the unseen instance values from the query string
-    # they are in the request object
-    team = request.args.get("TEAM") # defaults to None
-    adjoe = request.args.get("ADJOE")
-    adjde = request.args.get("ADJDE")
-    eff_o = request.args.get("EFF_O")
-    eff_d = request.args.get("EFF_D")
-    year = request.args.get("YEAR")
-
-    instance = [team,adjoe,adjde,eff_o,eff_d,year]
-    header, tree = load_model()
-    # lets make a prediction!
-    pred = predict(header, tree, instance)
-    if pred is not None:
-        return jsonify({"prediction": pred}), 200
-    # something went wrong!!
-    return "Error making a prediction", 400
-
-
-if __name__ == "__main__":
-   app.run(host="0.0.0.0",port=5001, debug=False) 
+# first thing, check the response's status_code
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#successful_responses
+print(response.status_code)
+if response.status_code == 200:
+    # STATUS OK
+    # we can extract the prediction from the response's JSON text
+    json_object = json.loads(response.text)
+    print(json_object)
+    pred = json_object["prediction"]
+    print("prediction:", pred)
