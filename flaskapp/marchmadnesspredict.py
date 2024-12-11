@@ -13,15 +13,15 @@ def load_model():
     return header, tree
 
 
-# TEAM,CONF,G,W,ADJOE,ADJDE,BARTHAG,EFG_O,EFG_D,TOR,TORD,ORB,DRB,FTR,FTRD,2P_O,2P_D,3P_O,3P_D,ADJ_T,WAB,POSTSEASON,SEED,YEAR
 @app.route("/")
 def index():
     return """
+
         <h1>Welcome to the March Madness Predictor App</h1>
         <img src="https://i.bleacherreport.net/images/team_logos/328x328/gonzaga_basketball.png?canvas=492,328" alt="Gonzaga Bulldogs">
         
         <!-- Example button to trigger a prediction or form submission -->
-        <form action="/predict" method="get">
+        <form action="https://march-madness-tournament-predictor.onrender.com/" method="get">
             <label for="TEAM">Team:</label>
             <input type="text" id="TEAM" name="TEAM"><br><br>
             
