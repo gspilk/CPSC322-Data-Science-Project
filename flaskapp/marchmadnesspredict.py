@@ -11,8 +11,12 @@ def load_model():
     header, tree = pickle.load(infile)
     infile.close()
     return header, tree
-
-
+def predict(self, X_test):
+        """Makes predictions for test instances in X_test."""
+        distances, neighbor_indices = self.kneighbors(X_test)
+        y_predicted = []
+        
+        
 @app.route("/")
 def index():
     return """
@@ -70,3 +74,4 @@ def predict():
 
 if __name__ == "__main__":
    app.run(host="0.0.0.0",port=5001, debug=False) 
+
