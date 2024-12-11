@@ -30,6 +30,6 @@ march_tree = [
 
 # Pickle (serialize) header and tree together
 packaged_obj = (march_header, march_tree)
-outfile = open("flaskapp/tree.p", "wb")
+outfile = open("tree.p", "wb")
 pickle.dump(packaged_obj, outfile)
 outfile.close()
