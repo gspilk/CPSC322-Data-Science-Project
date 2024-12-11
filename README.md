@@ -18,30 +18,49 @@ The dataset we decided to use is a college basketball dataset from the 2013 seas
 Attributes explored in final_report.ipynb:
 
 ADJOE-Adjusted Offensive Efficiency
+
 ADJDE-Adjusted Defensive Efficiency
+
 BARTHAG-Power Rating (Chance of beating an average Division I team)
+
 EFG_O-Effective Field Goal Percentage Shot
+
 3P_O-Three-Point Shooting Percentage
+
 ORB-Offensive Rebound Rate
+
 DRB-Offensive Rebound Rate Allowed
+
 
 Attributes explored in data_analysis.ipynb:
 
 Wins - Amount of wins
+
 Postseason - How Far a team got in March Madness
+
 BARTHAG-Power Rating (Chance of beating an average Division I team)
+
 ADJOE-Adjusted Offensive Efficiency
+
 ADJDE-Adjusted Defensive Efficiency
+
 EFG_O-Effective Field Goal Percentage Shot
 
 Attributes explored in datamining.ipynb
 
+
 ADJOE-Adjusted Offensive Efficiency
+
 ADJDE-Adjusted Defensive Efficiency
+
 BARTHAG-Power Rating (Chance of beating an average Division I team)
+
 EFG_O-Effective Field Goal Percentage Shot
+
 3P_O-Three-Point Shooting Percentage
+
 ORB-Offensive Rebound Rate
+
 DRB-Offensive Rebound Rate Allowed
 
 
