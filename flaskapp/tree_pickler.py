@@ -1,35 +1,35 @@
 import pickle
 
-march_header = ["TEAM", "ADJOE", "ADJDE", "EFF_O", "EFF_D", "YEAR"]  # The header representing feature names
+# Updated header to include TEAM and POSTSEASON
+march_header = ["TEAM", "ADJOE", "ADJDE", "YEAR", "POSTSEASON"]
 
+# Decision tree structure
 march_tree = [
-    'Attribute', 'TEAM', 
-    ['Value', 'Duke', 
-        ['Attribute', 'ADJOE', 
-            ['Value', '125.2', ['Leaf', 'True', 1, 3523]], 
-            ['Value', 'no', ['Leaf', 'False', 3522, 3523]]
-        ],
-        ['Attribute', 'ADJDE', 
-            ['Value', '90.6', ['Leaf', 'True', 1, 3523]], 
-            ['Value', 'no', ['Leaf', 'False', 3522, 3523]]
-        ],
-        ['Attribute', 'EFF_O', 
-            ['Value', '0.9764', ['Leaf', 'True', 1, 3523]], 
-            ['Value', 'no', ['Leaf', 'False', 3522, 3523]]
-        ],
-        ['Attribute', 'EFF_D', 
-            ['Value', '56.6', ['Leaf', 'True', 1, 3523]], 
-            ['Value', 'no', ['Leaf', 'False', 3522, 3523]]
-        ],
-        ['Attribute', 'YEAR', 
-            ['Value', '2015', ['Leaf', 'True', 1, 3523]], 
-            ['Value', 'no', ['Leaf', 'False', 3522, 3523]]
+    "Attribute", "TEAM", [
+        "Value", "Duke", [
+            "Attribute", "ADJOE", [
+                "Value", 125.2, [
+                    "Attribute", "ADJDE", [
+                        "Value", 90.6, [
+                            "Attribute", "YEAR", [
+                                "Value", 2015, ["Leaf", "Champions"]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         ]
+    ],
+    [
+        "Value", "Other", ["Leaf", "Did not qualify"]
     ]
 ]
 
-# Pickle (serialize) header and tree together
+# Pack header and tree into a single object
 packaged_obj = (march_header, march_tree)
-outfile = open("tree.p", "wb")
-pickle.dump(packaged_obj, outfile)
-outfile.close()
+
+# Save the tree to a pickle file
+with open("flaskapp/tree.p", "wb") as outfile:
+    pickle.dump(packaged_obj, outfile)
+
+print("Decision tree saved to tree.p")
