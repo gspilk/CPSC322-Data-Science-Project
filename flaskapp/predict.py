@@ -1,18 +1,22 @@
-import requests # a lib for making http requests
-import json # a lib for working with json
+import requests
 
-url = "https://march-madness-tournament-predictor.onrender.com/"
+url = "https://march-madness-tournament-predictor.onrender.com"
 
-response = requests.get(url=url)
+# Define query parameters for prediction
+params = {
+    "TEAM": "Duke",    # Team name
+    "ADJOE": 125.2,    # Offensive efficiency
+    "ADJDE": 90.6,     # Defensive efficiency
+    "YEAR": 2015       # Year of tournament
+}
 
-# first thing, check the response's status_code
-# https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
-# https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#successful_responses
-print(response.status_code)
+# Send the GET request
+response = requests.get(url, params=params)
+
+# Handle the response
+print(f"Status Code: {response.status_code}")
 if response.status_code == 200:
-    # STATUS OK
-    # we can extract the prediction from the response's JSON text
-    json_object = json.loads(response.text)
-    print(json_object)
-    pred = json_object["prediction"]
-    print("prediction:", pred)
+    json_object = response.json()
+    print(f"Prediction for {json_object['team']} ({json_object['year']}): {json_object['prediction']}")
+else:
+    print("Error:", response.text)
