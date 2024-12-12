@@ -21,7 +21,7 @@ march_tree = [
         ]
     ],
     [
-        "Value", "Other", ["Leaf", "Did not qualify"]
+        "Value", "Other", ["Leaf", "Did not tournament"]
     ]
 ]
 
