@@ -4,24 +4,8 @@ import pickle
 march_header = ["TEAM", "ADJOE", "ADJDE", "YEAR", "POSTSEASON"]
 
 # Decision tree structure
-march_tree = [
-    "Attribute", "TEAM", [
-        "Value", "Duke", [
-            "Attribute", "ADJOE", [
-                "Value", 125.2, [
-                    "Attribute", "ADJDE", [
-                        "Value", 90.6, [
-                            "Attribute", "YEAR", [
-                                "Value", 2015, ["Leaf", "Champions"]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ]
-    ],
-    [
-        "Value", "Other", ["Leaf", "Did not win the tournament"]
+march_tree = ["Attribute", "TEAM", ["Value", "Duke", ["Attribute", "ADJOE", ["Value", 125.2, ["Attribute", "ADJDE", ["Value", 90.6, ["Attribute", "YEAR", ["Value", 2015, ["Leaf", "Champions"]]]]]]]],[
+    "Value", "Other", ["Leaf", "Did not win the tournament"]
     ]
 ]
 
