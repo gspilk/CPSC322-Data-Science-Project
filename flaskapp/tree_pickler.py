@@ -31,5 +31,6 @@ packaged_obj = (march_header, march_tree)
 # Save the tree to a pickle file
 with open("flaskapp/tree.p", "wb") as outfile:
     pickle.dump(packaged_obj, outfile)
+    outfile.close()
 
 print("Decision tree saved to tree.p")
